@@ -1,0 +1,257 @@
+body {
+  background-color: #222;
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+}
+
+header {
+  text-align: center;
+}
+
+h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 4.2em;
+  font-weight: 100;
+}
+
+input[type="text"]{
+  outline: none;
+  border: none;
+  font-size: 0.8em;
+  padding: 7px 15px;
+  margin-left: 5px;
+  border-radius: 12px;
+  vertical-align: 3px;
+  background-color: #333;
+  color: #fff;
+}
+
+.movieDiv input {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0px;
+  border-radius: 8px;
+  padding: 10px 20px;
+  min-width: 84%;
+}
+.movieDiv > div.btns {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.movieDiv button {
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  padding: 8px 20px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  font-size: 1.4em;
+  margin: 4px;
+}
+
+.movieDiv button.add {
+  color: #232323;
+  background-color: #46a84b;
+}
+.movieDiv button.close {
+  background-color: #444;
+}
+
+.movieDiv > .btns > button.close:hover {
+  color: #222;
+  background-color: #888;
+}
+.movieDiv > .btns > button.add:hover {
+  color: #222;
+  background-color: #5cdd62;
+}
+
+
+/* Movie Holder Wrapper */
+#movieWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 85%;
+  margin: auto;
+  background-color: #333;
+}
+
+#movieHolder {
+  display: flex;
+  padding: 0px 10px 20px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  border-radius: 3px;
+}
+
+/* TopBar */
+.topbar {
+  background-color: #333;
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
+}
+.topbar > p {
+  margin: 10px;
+  padding: 10px 25px;
+  border-radius: 6px;
+  display: inline-block;
+  background-color: #222;
+}
+
+#sort > span, #moviesPerPage > span{
+  vertical-align: -4px;
+}
+#sort > *, #moviesPerPage > * {
+  vertical-align: -6px;
+}
+.sortItem {
+  cursor: pointer;
+  color: #aaa;
+  text-shadow: 2px 3px 2px #333;
+}
+
+/* botbar */
+.botbar {
+  display: flex;
+  justify-content: center;
+}
+.botbar > span {
+  font-size: 1.8em;
+}
+
+.botbar > .arrow {
+  margin: 5px 20px;
+  color: #ddd;
+}
+.botbar > .arrow:hover {
+  color: #777;
+  cursor: pointer;
+}
+.botbar > .pageNumbers {
+  vertical-align: 10px;
+  color: #eee;
+  margin: 13px 5px;
+}
+.botbar > .pageNumbers > span {
+  font-size: 1.7em;
+  color: #999;
+  vertical-align: -7px;
+}
+/* Movie Posters */
+.movieDiv {
+  padding: 20px 35px;
+  color: #fff;
+  margin: 15px 10px;
+  background-color: #222;
+  max-width: 250px;
+  border-radius: 5px;
+}
+
+.movieDiv > img, .movieDiv .imagePlaceHolder {
+    width: 250px;
+    min-width: 250px;
+    min-height: 325px;
+    border-radius: 4px;
+    background-color: #333;
+    text-align: center;
+}
+.imagePlaceHolder > span {
+  font-size: 1.2em;
+  margin-top: 50%;
+  display: inline-block;
+}
+.imagePlaceHolder:hover {
+  background-color: #555;
+  cursor:pointer;
+}
+
+/* Add Movie Button Poster */
+#addmovie {
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 520px;
+  color: #444;
+
+}
+#addmovie:hover {
+  color: #666;
+  cursor: pointer;
+}
+#addmovieBtn:hover {
+  color: #777;
+}
+
+
+/* Loading Spin */
+
+.hidden, #addmovie.hidden {
+  display: none;
+}
+
+
+.sk-cube-grid {
+  width: 100px;
+  height: 100px;
+  margin: 140px auto;
+}
+
+.sk-cube-grid .sk-cube {
+  width: 33%;
+  height: 33%;
+  background-color: #222;
+  float: left;
+  -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+          animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+}
+.sk-cube-grid .sk-cube1 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+.sk-cube-grid .sk-cube2 {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s; }
+.sk-cube-grid .sk-cube3 {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s; }
+.sk-cube-grid .sk-cube4 {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s; }
+.sk-cube-grid .sk-cube5 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+.sk-cube-grid .sk-cube6 {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s; }
+.sk-cube-grid .sk-cube7 {
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s; }
+.sk-cube-grid .sk-cube8 {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s; }
+.sk-cube-grid .sk-cube9 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+
+@-webkit-keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1);
+  } 35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1);
+  }
+}
+
+@keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1);
+  } 35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1);
+  }
+}
