@@ -28,11 +28,12 @@
     <!-- Movie Wrapper -->
     <div id="movieWrapper">
       <!-- Top Bar -->
-      <div class="topbar hidden">
-        <p id="sort"><i class="fas fa-sort"></i><span> Sort by: </span><span class="sortItem">Title</span></p>
-        <p id="moviesPerPage"><i class="fas fa-tv"></i><span> Show:</span><span class="sortItem"> 5</span></p>
+      <div id="topbar" class="topbar">
+        <p id="sort" class="noselect"><i class="fas fa-sort"></i><span> Sort by: </span><span class="sortItem category">Title</span></p>
+        <p id="moviesPerPage" class="noselect"><i class="fas fa-tv"></i><span> Show:</span><span class="sortItem mpp"></span></p>
         <p><i class="fas fa-filter"></i> <input type="text" placeholder="Filter"></p>
         <p><i class="fas fa-search"></i> <input type="text" placeholder="Search"></p>
+        <p><span id="sync"><i class="fas fa-sync"></span></i></p>
       </div>
       <!-- Movie Poster Holder -->
       <div id="movieHolder">
@@ -53,12 +54,7 @@
           <i id="addmovieBtn" class="fas fa-plus fa-6x"></i>
         </div>
       </div>
-      <div class="botbar">
-        <!-- <span class="arrow"> <i class="fas fa-caret-left fa-3x"></i></span> -->
-
-        <span class="hidden pageNumbers"><span>1</span> 2 3 </span>
-
-        <span class="hidden arrow"><i class="fas fa-caret-right fa-3x"></i></span>
+      <div id="botbar" class="botbar">
       </div>
     </div>
   </main>

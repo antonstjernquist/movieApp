@@ -89,7 +89,7 @@ input[type="text"]{
 /* TopBar */
 .topbar {
   background-color: #333;
-  display: flex;
+  display: none;
   justify-content: center;
   padding-top: 15px;
 }
@@ -104,9 +104,16 @@ input[type="text"]{
 #sort > span, #moviesPerPage > span{
   vertical-align: -4px;
 }
-#sort > *, #moviesPerPage > * {
+#sort > *, #moviesPerPage > *, #sync > * {
   vertical-align: -6px;
 }
+
+#sync:hover {
+  cursor: pointer;
+  color: #eef0a4;
+}
+
+
 .sortItem {
   cursor: pointer;
   color: #aaa;
@@ -130,16 +137,29 @@ input[type="text"]{
   color: #777;
   cursor: pointer;
 }
-.botbar > .pageNumbers {
+.botbar > span.pageNumbers {
   vertical-align: 10px;
   color: #eee;
   margin: 13px 5px;
 }
-.botbar > .pageNumbers > span {
-  font-size: 1.7em;
-  color: #999;
-  vertical-align: -7px;
+.botbar > span > ul.pageNumbers {
+  margin: 0;
+  padding: 0;
+  color: #eee;
+  list-style: none;
 }
+.botbar li {
+  display: inline;
+  vertical-align: -15px;
+  margin: 6px;
+  cursor: pointer;
+}
+
+.botbar > span > ul > li.current{
+  color:#f5f769;
+  font-size: 1.3em;
+}
+
 /* Movie Posters */
 .movieDiv {
   padding: 20px 35px;
