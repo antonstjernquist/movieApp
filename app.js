@@ -12,6 +12,9 @@ const db = firebase.database();
 
 /* End of Firebase initlialization */
 
+/* Set some debug shit here */
+localStorage.setItem('moviesPerPage', '5');
+
 $(window).on('load', function(){
   console.log("Window loaded");
 
@@ -23,11 +26,11 @@ $(window).on('load', function(){
 
 
   /* Display Movies */
-  let moviePerPage = 5;
+  let moviesPerPage = Number.parseInt(localStorage.getItem('moviesPerPage'));
   let i = 0;
   /* Display 5 movies for now */
 
-  db.ref('movies/').limitToLast(10).on('child_added', function(snapshot) {
+  db.ref('movies/').limitToLast(moviesPerPage).on('child_added', function(snapshot) {
 
     pageLoaded();
 
@@ -102,7 +105,15 @@ function setupAddMovie(){
   let addMovieDiv = $('#addmovie');
 
   addMovieDiv.html(`
-    <div class="imagePlaceHolder"><span> No image selected <br /> <br />Drag and drop</span></div>
+    <div class="imagePlaceHolder">
+      <span>No image selected</span>
+      <span>Drag and drop a image here</span>
+      <span>or</span>
+
+    </div>
+    <div class="addFileDiv">
+      <span class="addImageBtn"><i class="fas fa-plus fa-2x"></i> <span class="somtingelse"> Add image</span></span>
+    </div>
     <input id="addMovieTitle" type="text" placeholder="Titel..">
     <input id="addMovieYear" type="text" placeholder="Årtal..">
     <input id="addMovieDirector" type="text" placeholder="Regissör..">
@@ -115,14 +126,23 @@ function setupAddMovie(){
   addMovieDiv.removeAttr('id'); // Remove the ID
 
   /* Add EventListener for the add Button */
-
   $(document).on('click', '#movieToDbBtn', function (event){
 
     let title = $('#addMovieTitle').val();
     let director = $('#addMovieDirector').val();
     let year = $('#addMovieYear').val();
 
-    let post = new Poster(title, director, year, 'http://dummyimage.com/100x150.jpg/222/fff');
+
+    // Random colored images for testing purposes.
+    function getRandomNumber(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    let bgColor = getRandomNumber(0, 555);
+    let textColor = getRandomNumber(555,999999);
+
+    // Create a movie and push it to the database
+    let post = new Poster(title, director, year, 'http://dummyimage.com/100x150.jpg/'+bgColor+'/'+textColor);
     console.log('ADDED POST IS: ', post);
     post.push();
 
@@ -131,6 +151,12 @@ function setupAddMovie(){
     resetAddMovie();
   });
 
+  /* Add EventListener to add a image btn */
+  $(document).on('click', 'span.addImageBtn', function(){
+    alert('Alert alert, find me here! Good night to you sir!');
+  });
+
+  /* Add EventListener to close the addMovie */
   $(document).on('click', '#closeAddMovieBtn', function(){
     addMovieDiv.attr('id', 'addmovie');
     resetAddMovie();
@@ -142,5 +168,5 @@ function resetAddMovie(){
   let addMovieDiv = $('#addmovie');
 
   addMovieDiv.html(`<i id="addmovieBtn" class="fas fa-plus fa-6x"></i>`);
-
+  $(document).off('click', 'span.addImageBtn');
 }
