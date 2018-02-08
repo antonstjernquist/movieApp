@@ -16,7 +16,9 @@ const db = firebase.database();
 var downloadedMovies = []; // Contains posts.
 
 /* Set some debug shit here */
-//localStorage.setItem('moviesPerPage', '5');
+if(localStorage.getItem('moviesPerPage') == null){
+  localStorage.setItem('moviesPerPage', '5');
+}
 
 $(window).on('load', function(){
   console.log("Window loaded");
@@ -146,7 +148,7 @@ function displayMoviePosters(category, filter){
     if(i >= downloadedMovies.length){
       console.log('Out of range. This should be the last page.');
       break;
-      
+
     } else {
       displayPoster(downloadedMovies[i]);
     }
