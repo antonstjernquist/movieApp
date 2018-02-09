@@ -9,7 +9,7 @@ var config = {
 };
 firebase.initializeApp(config);
 const db = firebase.database();
-
+/*Test*/
 /* End of Firebase initlialization */
 
 /* Global Variable for Displayed movies */
