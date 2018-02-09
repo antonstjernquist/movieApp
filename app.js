@@ -119,7 +119,7 @@ class Poster{
 function pageLoaded(){
 
   /* Set moviesPerPage */
-  $('.sortitem, .mpp').html('&nbsp;'+localStorage.getItem('moviesPerPage'));
+  $('.sortitem, .mpp').html(localStorage.getItem('moviesPerPage'));
 
   /* Show this when loaded */
   $('.arrow, .pageNumbers, #addmovie').removeClass('hidden');
@@ -263,9 +263,9 @@ function setupMoviesPerPage(target, rightClick){
   }
 
   if(rightClick){
-    target.innerHTML = '&nbsp;' + (currentValue - 5);
+    target.innerHTML = (currentValue - 5);
   } else {
-    target.innerHTML = '&nbsp;' + (currentValue + 5);
+    target.innerHTML = (currentValue + 5);
   }
   localStorage.setItem('moviesPerPage', target.innerText - 0);
 }

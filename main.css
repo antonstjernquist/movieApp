@@ -100,11 +100,14 @@ input[type="text"]{
   display: inline-block;
   background-color: #222;
 }
+.topbar > #moviesPerPage {
+  min-width: 94px;
+}
 
-#sort > span, #moviesPerPage > span{
+#sort > span, #moviesPerPage > span, #sync > * {
   vertical-align: -4px;
 }
-#sort > *, #moviesPerPage > *, #sync > * {
+#sort > *, #moviesPerPage > *{
   vertical-align: -6px;
 }
 
@@ -113,10 +116,10 @@ input[type="text"]{
   color: #eef0a4;
 }
 
-
 .sortItem {
   cursor: pointer;
   color: #aaa;
+  margin-left: 6px;
   text-shadow: 2px 3px 2px #333;
 }
 
@@ -151,7 +154,7 @@ input[type="text"]{
 .botbar li {
   display: inline;
   vertical-align: -15px;
-  margin: 6px;
+  margin: 7px;
   cursor: pointer;
 }
 
