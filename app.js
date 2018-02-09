@@ -23,6 +23,16 @@ if(localStorage.getItem('moviesPerPage') == null){
 $(window).on('load', function(){
   console.log("Window loaded");
 
+  // Search EventListener
+  $('#search').keypress(function(event) {
+    if(event.which == 13) {
+      let results = index.search($('#search').val(), {});
+      console.log(results);
+    }
+});
+
+
+
   /* Add EventListener for addMovie */
   $(document).on('click', '#addmovieBtn', function(event) {
     setupAddMovie();
@@ -73,7 +83,8 @@ $(window).on('load', function(){
 
     let post = new Poster(data.title, data.director, data.year, data.imageurl, data.time);
     post.setKey(dataKey);
-
+    index.addDoc(post);
+    console.log(post);
       // Display the post here for now.
       if(i < moviesPerPage){
         displayPoster(post);
@@ -115,6 +126,12 @@ class Poster{
 }
 
 /* Functions */
+var index = elasticlunr(function () {
+    this.addField('director');
+    this.addField('year');
+    this.addField('title');
+    this.setRef('key');
+});
 
 function pageLoaded(){
 
