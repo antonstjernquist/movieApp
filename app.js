@@ -46,10 +46,7 @@ $(window).on('load', function() {
         }
       });
       console.log(results);
-      results.forEach(function(item) {
-        displayPoster(item.doc, true);
-      })
-
+      displayMoviePosters(true, results);
     }
   });
 
@@ -64,11 +61,13 @@ $(window).on('load', function() {
   /* Add EventListener for moviesPerPage */
   $(document).on('click', '.sortitem, .mpp', function(event) {
     setupMoviesPerPage(event.target, false);
+    displayMoviePosters();
   });
 
   $('.sortitem, .mpp').contextmenu(function(event) {
     event.preventDefault();
     setupMoviesPerPage(event.target, true);
+    displayMoviePosters();
   });
 
   /*Add EventListener for sort by category */
@@ -172,28 +171,29 @@ function pageLoaded() {
 }
 
 /* Display movies based on category, filter, moviesPerPage and currentpage */
-function displayMoviePosters(category, filter) {
+function displayMoviePosters(search = false, post, category, filter) {
   /*
-
   category = What category to sort by. title/director/year/newest/oldest
   filter = offlinefilter, only show movies that contains this.   */
 
   $('.poster').remove(); // Remove all displayed posters.
-
   let mpp = Number.parseInt(localStorage.getItem('moviesPerPage')); // moviesPerPage
   let currentPage = Number.parseInt(localStorage.getItem('currentPage'));
   console.log('CURRENT PAGE IS: ', currentPage);
-
   // 5 * 1 = 5 - 5 = 0; 10 * 2 = 20 - 10 = 10 -> 10 * 2 = 20
   for (let i = (mpp * currentPage) - mpp; i < (mpp * currentPage); i++) {
     if (i >= downloadedMovies.length) {
       console.log('Out of range. This should be the last page.');
       break;
-
     } else {
-      displayPoster(downloadedMovies[i]);
-    }
+      if (search) {
+        if (i === post.length) {break};
+        displayPoster(post[i].doc, search);
+      } else {
+        displayPoster(downloadedMovies[i]);
+      }
 
+    }
     console.log('Number:', i)
   }
 
