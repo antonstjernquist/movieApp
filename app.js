@@ -16,20 +16,42 @@ const db = firebase.database();
 var downloadedMovies = []; // Contains posts.
 
 /* Set some debug shit here */
-if(localStorage.getItem('moviesPerPage') == null){
+if (localStorage.getItem('moviesPerPage') == null) {
   localStorage.setItem('moviesPerPage', '5');
 }
 
-$(window).on('load', function(){
+$(window).on('load', function() {
   console.log("Window loaded");
 
   // Search EventListener
   $('#search').keypress(function(event) {
-    if(event.which == 13) {
-      let results = index.search($('#search').val(), {});
+    if (event.which == 13) {
+      let results = index.search($('#search').val(), {
+        fields: {
+          title: {
+            boost: 3
+          },
+          director: {
+            boost: 3
+          },
+          year: {
+            boost: 3
+          },
+          imageurl: {
+            boost: 1
+          },
+          time: {
+            boost: 1
+          }
+        }
+      });
       console.log(results);
+      results.forEach(function(item) {
+        displayPoster(item.doc, true);
+      })
+
     }
-});
+  });
 
 
 
@@ -55,7 +77,7 @@ $(window).on('load', function(){
   });
 
   /* Add EventListener for sync */
-  $(document).on('click', '#sync', function(event){
+  $(document).on('click', '#sync', function(event) {
     console.log('Sync was pressed! Reloading the movies.');
     displayMoviePosters();
   });
@@ -68,9 +90,9 @@ $(window).on('load', function(){
 
   db.ref('movies/').on('child_added', function(snapshot) {
 
-    if(once){
+    if (once) {
       pageLoaded();
-      setTimeout(function(){
+      setTimeout(function() {
         /* setPage */
         setPage(1);
       }, 200);
@@ -85,15 +107,15 @@ $(window).on('load', function(){
     post.setKey(dataKey);
     index.addDoc(post);
     console.log(post);
-      // Display the post here for now.
-      if(i < moviesPerPage){
-        displayPoster(post);
-        i++;
-      }
+    // Display the post here for now.
+    if (i < moviesPerPage) {
+      displayPoster(post);
+      i++;
+    }
 
 
-      //Post it to the downloadedMovies
-      downloadedMovies.push(post);
+    //Post it to the downloadedMovies
+    downloadedMovies.push(post);
     // post.push();
   });
 
@@ -102,38 +124,40 @@ $(window).on('load', function(){
 
 /* Classes */
 
-class Poster{
-  constructor(title, director, year, imageurl, time){
+class Poster {
+  constructor(title, director, year, imageurl, time) {
     this.title = title;
     this.director = director;
     this.year = year;
     this.imageurl = imageurl;
     this.time = time == null ? firebase.database.ServerValue.TIMESTAMP : time;
   }
-  push(){
+  push() {
     db.ref('movies/').push(this);
   }
-  remove(){
-    if(this.key != null){
+  remove() {
+    if (this.key != null) {
       db.ref('movies/').remove(this.key);
     } else {
       console.log('This poster cannot be removed since no key has been set!');
     }
   }
-  setKey(key){
+  setKey(key) {
     this.key = key;
   }
 }
 
 /* Functions */
-var index = elasticlunr(function () {
-    this.addField('director');
-    this.addField('year');
-    this.addField('title');
-    this.setRef('key');
+var index = elasticlunr(function() {
+  this.addField('director');
+  this.addField('imageurl');
+  this.setRef('key');
+  this.addField('time');
+  this.addField('title');
+  this.addField('year');
 });
 
-function pageLoaded(){
+function pageLoaded() {
 
   /* Set moviesPerPage */
   $('.sortitem, .mpp').html(localStorage.getItem('moviesPerPage'));
@@ -148,7 +172,7 @@ function pageLoaded(){
 }
 
 /* Display movies based on category, filter, moviesPerPage and currentpage */
-function displayMoviePosters(category, filter){
+function displayMoviePosters(category, filter) {
   /*
 
   category = What category to sort by. title/director/year/newest/oldest
@@ -158,11 +182,11 @@ function displayMoviePosters(category, filter){
 
   let mpp = Number.parseInt(localStorage.getItem('moviesPerPage')); // moviesPerPage
   let currentPage = Number.parseInt(localStorage.getItem('currentPage'));
-  console.log('CURRENT PAGE IS: ',currentPage);
+  console.log('CURRENT PAGE IS: ', currentPage);
 
-              // 5 * 1 = 5 - 5 = 0; 10 * 2 = 20 - 10 = 10 -> 10 * 2 = 20
-  for(let i = (mpp * currentPage) - mpp; i < (mpp * currentPage); i++){
-    if(i >= downloadedMovies.length){
+  // 5 * 1 = 5 - 5 = 0; 10 * 2 = 20 - 10 = 10 -> 10 * 2 = 20
+  for (let i = (mpp * currentPage) - mpp; i < (mpp * currentPage); i++) {
+    if (i >= downloadedMovies.length) {
       console.log('Out of range. This should be the last page.');
       break;
 
@@ -170,18 +194,18 @@ function displayMoviePosters(category, filter){
       displayPoster(downloadedMovies[i]);
     }
 
-      console.log('Number:',i)
+    console.log('Number:', i)
   }
 
 }
 
 /* Set a page function */
-function setPage(page){
+function setPage(page) {
   let mpp = Number.parseInt(localStorage.getItem('moviesPerPage'));
   let movieAmount = downloadedMovies.length;
   localStorage.setItem('currentPage', page);
 
-  let pages = Math.ceil(movieAmount/mpp);
+  let pages = Math.ceil(movieAmount / mpp);
   console.log('Number of movies in our database:', movieAmount);
   console.log('Pages: ', Math.ceil(pages));
 
@@ -189,16 +213,16 @@ function setPage(page){
   let leftArrow = document.createElement('span');
   leftArrow.className = 'arrow';
   leftArrow.innerHTML = '<i class="fas fa-caret-left fa-3x"></i>';
-  leftArrow.addEventListener('click', function(){
-    setPage(page-1);
+  leftArrow.addEventListener('click', function() {
+    setPage(page - 1);
   });
 
 
   let rightArrow = document.createElement('span');
   rightArrow.className = 'arrow';
   rightArrow.innerHTML = '<i class="fas fa-caret-right fa-3x"></i>';
-  rightArrow.addEventListener('click', function(){
-    setPage(page+1);
+  rightArrow.addEventListener('click', function() {
+    setPage(page + 1);
   });
 
   // Create the list.
@@ -207,30 +231,31 @@ function setPage(page){
   list.className = 'pageNumbers';
   spanNumbers.className = 'pageNumbers';
 
-  for(let i = 1; i <= pages; i++){
+  for (let i = 1; i <= pages; i++) {
     let listItem = document.createElement('li');
 
     listItem.innerText = i;
     // Set current.
-    let added = false, current = false;
+    let added = false,
+      current = false;
     //Append or not append? The number needs to be close to page!
-    if(i > page-4 && i < page){
+    if (i > page - 4 && i < page) {
       added = true;
-    } else if(i < page + 4  && i > page) {
+    } else if (i < page + 4 && i > page) {
       added = true;
-    } else if (i == page){
+    } else if (i == page) {
       added = true;
       current = true;
     }
 
-    if(added){
-      if(current){
+    if (added) {
+      if (current) {
         listItem.className = 'current noselect';
       } else {
         listItem.className = 'noselect';
       }
 
-      listItem.addEventListener('click', function(){
+      listItem.addEventListener('click', function() {
         setPage(i);
       });
       list.appendChild(listItem);
@@ -241,45 +266,50 @@ function setPage(page){
   //Clear botbar
   $('#botbar').html('');
   //append to botbar after some checks
-  if(page != 1){ // If it's not the first page. Add left arrow
+  if (page != 1) { // If it's not the first page. Add left arrow
     $('#botbar').append(leftArrow)
   }
 
   //Always add the middle numbers
   $('#botbar').append(spanNumbers);
 
-  if (page != pages){ // If it's not the last page. Add right arrow
+  if (page != pages) { // If it's not the last page. Add right arrow
     $('#botbar').append(rightArrow);
   }
 }
 
 /* Display a single moviePoster function */
-function displayPoster(post){
+function displayPoster(post, search) {
 
-    let movieDiv = document.createElement('div');
-    movieDiv.className = 'movieDiv poster';
+  let movieDiv = document.createElement('div');
+  movieDiv.className = 'movieDiv poster';
 
-    movieDiv.innerHTML = `
+  movieDiv.innerHTML = `
     <img draggable="false" src="${post.imageurl}" alt="Movie Poster">
     <p>Titel: ${post.title}</p>
     <p>Årtal: ${post.year}</p>
     <p>Regissör: ${post.director}</p>`;
+  if (search) {
+    movieDiv.className = 'movieDiv poster boxShadow';
+    // LÄGGER TILL FILMERNA FÖRST finns bättre sätt att göra, typ använda displayMoviePosters med filter
+  }
+  $('#movieHolder').prepend(movieDiv);
 
-    $('#movieHolder').prepend(movieDiv);
+
 }
 
 /* Setup moviesPerPage function */
-function setupMoviesPerPage(target, rightClick){
+function setupMoviesPerPage(target, rightClick) {
 
   let currentValue = target.innerText - 0;
 
-  if(currentValue >= 50 && !rightClick){
+  if (currentValue >= 50 && !rightClick) {
     currentValue = 0;
-  } else if(currentValue <= 5 && rightClick){
+  } else if (currentValue <= 5 && rightClick) {
     currentValue = 55;
   }
 
-  if(rightClick){
+  if (rightClick) {
     target.innerHTML = (currentValue - 5);
   } else {
     target.innerHTML = (currentValue + 5);
@@ -288,7 +318,7 @@ function setupMoviesPerPage(target, rightClick){
 }
 
 /* Add Movie Function */
-function setupAddMovie(){
+function setupAddMovie() {
 
   let addMovieDiv = $('#addmovie');
 
@@ -314,7 +344,7 @@ function setupAddMovie(){
   addMovieDiv.removeAttr('id'); // Remove the ID
 
   /* Add EventListener for the add Button */
-  $(document).on('click', '#movieToDbBtn', function (event){
+  $(document).on('click', '#movieToDbBtn', function(event) {
 
     let title = $('#addMovieTitle').val();
     let director = $('#addMovieDirector').val();
@@ -327,10 +357,10 @@ function setupAddMovie(){
     }
 
     let bgColor = getRandomNumber(0, 555);
-    let textColor = getRandomNumber(555,999999);
+    let textColor = getRandomNumber(555, 999999);
 
     // Create a movie and push it to the database
-    let post = new Poster(title, director, year, 'http://dummyimage.com/100x150.jpg/'+bgColor+'/'+textColor);
+    let post = new Poster(title, director, year, 'http://dummyimage.com/100x150.jpg/' + bgColor + '/' + textColor);
     console.log('ADDED POST IS: ', post);
     post.push();
 
@@ -340,19 +370,19 @@ function setupAddMovie(){
   });
 
   /* Add EventListener to add a image btn */
-  $(document).on('click', 'span.addImageBtn', function(){
+  $(document).on('click', 'span.addImageBtn', function() {
     alert('Alert alert, find me here! Good night to you sir!');
   });
 
   /* Add EventListener to close the addMovie */
-  $(document).on('click', '#closeAddMovieBtn', function(){
+  $(document).on('click', '#closeAddMovieBtn', function() {
     addMovieDiv.attr('id', 'addmovie');
     resetAddMovie();
   })
 }
 
 /* Reset movie Function */
-function resetAddMovie(){
+function resetAddMovie() {
 
   let addMovieDiv = $('#addmovie');
 
