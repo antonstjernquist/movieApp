@@ -13,7 +13,8 @@ const db = firebase.database();
 /* End of Firebase initlialization */
 
 /* Global Variable for Displayed movies */
-var downloadedMovies = []; // Contains posts.
+var downloadedMovies = [],
+  category = "title"; // Contains posts.
 
 /* Set some debug shit here */
 if (localStorage.getItem('moviesPerPage') == null) {
@@ -23,6 +24,9 @@ if (localStorage.getItem('moviesPerPage') == null) {
 $(window).on('load', function() {
   console.log("Window loaded");
 
+  $("#radio01").prop("checked", true);
+  console.log($('#radio01').val());
+  console.log("FIIIIIIIIIIIIIIIIIIREd");
   // Search EventListener
   $('#search').keypress(function(event) {
     if (event.which == 13) {
@@ -50,7 +54,7 @@ $(window).on('load', function() {
     }
   });
 
-
+  // Den visar inte första filmen om man har mer än 5 per page, Bläddra sida funkar inte.
 
   /* Add EventListener for addMovie */
   $(document).on('click', '#addmovieBtn', function(event) {
@@ -71,8 +75,27 @@ $(window).on('load', function() {
   });
 
   /*Add EventListener for sort by category */
-  $(document).on('click', '.sortitem, .category', function(event) {
-    alert('.sortItem, .category');
+  let counter = 1;
+  $(document).on('click', '#sort', function(event) {
+    counter < 3 ? counter++ : counter = 1;
+    switch (counter) {
+      case 1:
+        category = "title";
+        $('.category').text("Title");
+        displayMoviePosters();
+        break;
+      case 2:
+        category = "year";
+        $('.category').text("Year");
+        displayMoviePosters();
+        break;
+      case 3:
+        category = "director";
+        $('.category').text("Director");
+        displayMoviePosters();
+        break;
+    }
+
   });
 
   /* Add EventListener for sync */
@@ -105,7 +128,6 @@ $(window).on('load', function() {
     let post = new Poster(data.title, data.director, data.year, data.imageurl, data.time);
     post.setKey(dataKey);
     index.addDoc(post);
-    console.log(post);
     // Display the post here for now.
     if (i < moviesPerPage) {
       displayPoster(post);
@@ -171,23 +193,38 @@ function pageLoaded() {
 }
 
 /* Display movies based on category, filter, moviesPerPage and currentpage */
-function displayMoviePosters(search = false, post, category, filter) {
+function displayMoviePosters(search = false, post) {
   /*
-  category = What category to sort by. title/director/year/newest/oldest
-  filter = offlinefilter, only show movies that contains this.   */
+  category = What category to sort by. title/director/year/newest/oldest*/
 
+
+
+  if (typeof(category) == "string") {
+    downloadedMovies.sort(function(a, b) {
+      if (a[category] < b[category]) return -1;
+      if (a[category] > b[category]) return 1;
+      return 0
+    })
+  } else if (typeof(category) == "number") {
+    downloadedMovies.sort(function(a, b) {
+      return a - b;
+    })
+  }
   $('.poster').remove(); // Remove all displayed posters.
   let mpp = Number.parseInt(localStorage.getItem('moviesPerPage')); // moviesPerPage
   let currentPage = Number.parseInt(localStorage.getItem('currentPage'));
   console.log('CURRENT PAGE IS: ', currentPage);
   // 5 * 1 = 5 - 5 = 0; 10 * 2 = 20 - 10 = 10 -> 10 * 2 = 20
+
   for (let i = (mpp * currentPage) - mpp; i < (mpp * currentPage); i++) {
     if (i >= downloadedMovies.length) {
       console.log('Out of range. This should be the last page.');
       break;
     } else {
       if (search) {
-        if (i === post.length) {break};
+        if (i === post.length) {
+          break
+        };
         displayPoster(post[i].doc, search);
       } else {
         displayPoster(downloadedMovies[i]);

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <!--Meta Tags-->
+  <!--Meta Tags-->
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,6 +21,7 @@
   <title> MovieApp</title>
 
 </head>
+
 <body>
   <header>
     <h1> MovieApp </h1>
@@ -31,10 +33,20 @@
       <!-- Top Bar -->
       <div id="topbar" class="topbar">
         <p id="sort" class="noselect"><i class="fas fa-sort"></i><span> Sort by: </span><span class="sortItem category">Title</span></p>
+        <div>
+          <input type="radio" id="radio01" value="" name="radio" />
+          <label for="radio01"><span></span>Descending</label>
+        </div>
+
+        <div>
+          <input type="radio" id="radio02" value="" name="radio" />
+          <label for="radio02"><span></span>Ascending</label>
+        </div>
         <p id="moviesPerPage" class="noselect"><i class="fas fa-tv"></i><span> Show:</span><span class="sortItem mpp"></span></p>
         <p><i class="fas fa-filter"></i> <input type="text" placeholder="Filter"></p>
         <p><i class="fas fa-search"></i> <input id="search" type="text" placeholder="Search"></p>
-        <p><span id="sync"><i class="fas fa-sync"></span></i></p>
+        <p><span id="sync"><i class="fas fa-sync"></span></i>
+        </p>
       </div>
       <!-- Movie Poster Holder -->
       <div id="movieHolder">
