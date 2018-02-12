@@ -167,10 +167,11 @@ input[type="text"]{
   list-style: none;
 }
 .botbar li {
-  display: inline;
+  display: inline-block;
   vertical-align: -15px;
   margin: 7px;
   cursor: pointer;
+  min-width: 24px;
 }
 
 .botbar > span > ul > li.current{

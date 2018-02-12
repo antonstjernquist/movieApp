@@ -264,6 +264,8 @@ function setPage(page) {
   let mpp = Number.parseInt(localStorage.getItem('moviesPerPage'));
   let movieAmount = downloadedMovies.length;
   localStorage.setItem('currentPage', page);
+  $("html, body").animate({ scrollTop: 0 }, 900);
+
 
   let pages = Math.ceil(movieAmount / mpp);
   console.log('Number of movies in our database:', movieAmount);
