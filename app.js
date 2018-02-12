@@ -157,11 +157,34 @@ class Poster {
     db.ref('movies/').push(this);
   }
   remove() {
+    console.log('The key of this post is:',this.key);
     if (this.key != null) {
-      db.ref('movies/').remove(this.key);
+      db.ref('movies/' + this.key).remove();
+
+      // Remove it from the downloadedMovies Array, LOOL funkade på första försöket :s
+      let removeIndex = downloadedMovies.findIndex(x => (x == this));
+      console.log('Found this index:', removeIndex);
+
+      if(removeIndex == '-1'){
+        console.log('Movie was not found in the database.');
+      }
+      console.log('Object at '+ removeIndex + ' is: ', downloadedMovies[removeIndex]);
+      downloadedMovies.splice(removeIndex,1);
+      console.log('Object at '+ removeIndex + ' after removed is: ', downloadedMovies[removeIndex]);
+
+
+      // Was the movie removed from downloadedMovies?
+      if(downloadedMovies.findIndex(x => (x == this)) != '-1'){
+        console.log('Movie was not removed. Something went wrong. The movie is still in the database!');
+      } else {
+        console.log('Movie removed successfully!');
+      }
     } else {
       console.log('This poster cannot be removed since no key has been set!');
     }
+  }
+  update(){
+    db.ref('movies/' + this.key).set(this);
   }
   setKey(key) {
     this.key = key;
@@ -222,7 +245,7 @@ function displayMoviePosters(search = false, post) {
       break;
     } else {
       if (search) {
-        if (i === post.length) {
+        if (i >= post.length) {
           break
         };
         displayPoster(post[i].doc, search);
@@ -252,6 +275,7 @@ function setPage(page) {
   leftArrow.innerHTML = '<i class="fas fa-caret-left fa-3x"></i>';
   leftArrow.addEventListener('click', function() {
     setPage(page - 1);
+    displayMoviePosters();
   });
 
 
@@ -260,6 +284,7 @@ function setPage(page) {
   rightArrow.innerHTML = '<i class="fas fa-caret-right fa-3x"></i>';
   rightArrow.addEventListener('click', function() {
     setPage(page + 1);
+    displayMoviePosters();
   });
 
   // Create the list.
@@ -294,6 +319,7 @@ function setPage(page) {
 
       listItem.addEventListener('click', function() {
         setPage(i);
+        displayMoviePosters();
       });
       list.appendChild(listItem);
     }
@@ -326,10 +352,105 @@ function displayPoster(post, search) {
     <p>Titel: ${post.title}</p>
     <p>Årtal: ${post.year}</p>
     <p>Regissör: ${post.director}</p>`;
+
+    let showMoreBtn = document.createElement('button');
+    showMoreBtn.innerHTML = '<i class="fas fa-bars"></i>';
+    showMoreBtn.className = 'showMoreBtn';
+
+
+    let showMoreDiv = document.createElement('div');
+    showMoreDiv.className = 'hidden';
+
+    let editBtn = document.createElement('button');
+    editBtn.className = 'showMoreBtn';
+    editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>'
+
+    let removeBtn = document.createElement('button');
+    removeBtn.className = 'showMoreBtn';
+    removeBtn.innerHTML = '<i class="fas fa-times"></i>'
+
+    showMoreDiv.appendChild(editBtn);
+    showMoreDiv.appendChild(removeBtn);
+
+    /* Add addEventListener */
+    showMoreBtn.addEventListener('click', function(){
+      if(showMoreDiv.className != 'showMoreDiv'){
+        showMoreDiv.className = 'showMoreDiv';
+      } else {
+        showMoreDiv.className = 'hidden';
+      }
+
+      editBtn.addEventListener('click', function(){
+        if(editBtn.getAttribute('save')){
+          editBtn.removeAttribute('save');
+
+          // Save the changes.
+          let newTitle = movieDiv.children[1].children[0];
+          let newYear = movieDiv.children[2].children[0];
+          let newDirector = movieDiv.children[3].children[0];
+
+          // Change the DOM back!
+
+          /* Start with some Checks */
+          if(newTitle.value.length < 2){
+            newTitle = newTitle.getAttribute('placeholder');
+          } else {
+            newTitle = newTitle.value;
+          }
+          if(newYear.value.length < 2){
+            newYear = newYear.getAttribute('placeholder');
+          } else {
+            newYear = newYear.value;
+          }
+          if(newDirector.value.length < 2){
+            newDirector = newDirector.getAttribute('placeholder');
+          } else {
+            newDirector = newDirector.value;
+          }
+
+          /* Set the values */
+          movieDiv.children[1].innerText = 'Title: ' + newTitle;
+          movieDiv.children[2].innerText = 'Year: ' + newYear;
+          movieDiv.children[3].innerText = 'Director: ' + newDirector;
+
+          /* Set back the button */
+          editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+
+
+          /* Update in the database */
+          post.title = newTitle;
+          post.year = newYear;
+          post.director = newDirector;
+
+          // Update with the new values!
+          post.update();
+
+        } else {
+          console.log('INNERHTML IS:',editBtn.innerText);
+          movieDiv.children[1].innerHTML = `<input type="text" placeholder="${post.title}">`
+          movieDiv.children[2].innerHTML = `<input type="text" placeholder="${post.year}">`
+          movieDiv.children[3].innerHTML = `<input type="text" placeholder="${post.director}">`
+          console.log(movieDiv.children);
+
+          editBtn.setAttribute('save', 'true');
+          editBtn.innerHTML = '<i class="fas fa-save"></i>';
+        }
+
+      });
+
+      removeBtn.addEventListener('click', function(){
+        post.remove();
+        movieDiv.parentNode.removeChild(movieDiv);
+      })
+    });
+
   if (search) {
     movieDiv.className = 'movieDiv poster boxShadow';
     // LÄGGER TILL FILMERNA FÖRST finns bättre sätt att göra, typ använda displayMoviePosters med filter
   }
+  // Lägg till knappen i movieDiv
+  movieDiv.appendChild(showMoreBtn);
+  movieDiv.appendChild(showMoreDiv);
   $('#movieHolder').prepend(movieDiv);
 
 
