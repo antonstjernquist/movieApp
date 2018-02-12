@@ -62,19 +62,23 @@ $(window).on('load', function() {
   /* Add EventListener for moviesPerPage */
   $(document).on('click', '.sortitem, .mpp', function(event) {
     setupMoviesPerPage(event.target, false);
+    resetAddMovie($('.imagePlaceHolder').parent());
+    setPage(Number.parseInt(localStorage.getItem('currentPage')));
     displayMoviePosters();
   });
 
   $('.sortitem, .mpp').contextmenu(function(event) {
     event.preventDefault();
+    resetAddMovie($('.imagePlaceHolder').parent());
     setupMoviesPerPage(event.target, true);
+    setPage(Number.parseInt(localStorage.getItem('currentPage')));
     displayMoviePosters();
   });
 
   /*Add EventListener for sort by category */
   let counter = 1;
   $(document).on('click', '#sort', function(event) {
-    counter < 3 ? counter++ : counter = 1;
+    counter < 4 ? counter++ : counter = 1;
     switch (counter) {
       case 1:
         category = "title";
@@ -89,6 +93,39 @@ $(window).on('load', function() {
       case 3:
         category = "director";
         $('.category').text("Director");
+        displayMoviePosters();
+        break;
+      case 4:
+        category = "time";
+        $('.category').text("Newest");
+        displayMoviePosters();
+        break;
+    }
+
+  });
+
+  $('#sort').contextmenu(function(event) {
+    event.preventDefault();
+    counter > 1 ? counter-- : counter = 4;
+    switch (counter) {
+      case 1:
+        category = "title";
+        $('.category').text("Title");
+        displayMoviePosters();
+        break;
+      case 2:
+        category = "year";
+        $('.category').text("Year");
+        displayMoviePosters();
+        break;
+      case 3:
+        category = "director";
+        $('.category').text("Director");
+        displayMoviePosters();
+        break;
+      case 4:
+        category = "time";
+        $('.category').text("Newest");
         displayMoviePosters();
         break;
     }
@@ -138,6 +175,10 @@ $(window).on('load', function() {
     // post.push();
   });
 
+
+  $('#search').on('blur', function(){
+    $('#search').val('');
+  });
 
   //End of callback
 });
@@ -193,6 +234,7 @@ function pageLoaded() {
 
   /* Set moviesPerPage */
   $('.sortitem, .mpp').html(localStorage.getItem('moviesPerPage'));
+  $('#movieWrapper').css('background-color','#333');
 
   /* Show this when loaded */
   $('.arrow, .pageNumbers, #addmovie').removeClass('hidden');
@@ -240,16 +282,18 @@ function displayMoviePosters(search = false, post) {
         };
         displayPoster(post[i].doc, search);
       } else {
-        console.log('ELSE');
+<<<<<<< current
           if ($('input:radio[name=radio]:checked').val() == 1){
             displayPoster(downloadedMovies[i]);
           } else if ($('input:radio[name=radio]:checked').val() == 2){
             displayPoster(downloadedMovies[downloadedMovies.length - i - 1]);
           }
+=======
+        displayPoster(downloadedMovies[downloadedMovies.length - i - 1 ]);
+>>>>>>> before discard
       }
 
     }
-    console.log('Number:', i)
   }
 
   addMovieDiv();
@@ -275,15 +319,24 @@ function removeAddMovieDiv(){
 function setPage(page) {
   let mpp = Number.parseInt(localStorage.getItem('moviesPerPage'));
   let movieAmount = downloadedMovies.length;
-  localStorage.setItem('currentPage', page);
+  resetAddMovie($('.imagePlaceHolder').parent());
   $("html, body").animate({ scrollTop: 0 }, 900);
 
-
+  /* Calculate number of pages */
   let pages = Math.ceil(movieAmount / mpp);
+
+  /* If the page we want to set is larger than pages, set it to the last page */
+  if(page >= pages){
+    page = pages;
+  }
+
+  /* Set the current page */
+  localStorage.setItem('currentPage', page);
+
   console.log('Number of movies in our database:', movieAmount);
   console.log('Pages: ', Math.ceil(pages));
 
-  //Create the arrows
+  /* Left Arrow */
   let leftArrow = document.createElement('span');
   leftArrow.className = 'arrow';
   leftArrow.innerHTML = '<i class="fas fa-caret-left fa-3x"></i>';
@@ -293,6 +346,7 @@ function setPage(page) {
   });
 
 
+  /* Right Arrow */
   let rightArrow = document.createElement('span');
   rightArrow.className = 'arrow';
   rightArrow.innerHTML = '<i class="fas fa-caret-right fa-3x"></i>';
@@ -311,13 +365,13 @@ function setPage(page) {
     let listItem = document.createElement('li');
 
     listItem.innerText = i;
-    // Set current.
-    let added = false,
-      current = false;
+    // Set current, set added to false.
+    let added = false, current = false;
+
     //Append or not append? The number needs to be close to page!
-    if (i > page - 4 && i < page) {
+    if (i > (page - 4) && i < page) {
       added = true;
-    } else if (i < page + 4 && i > page) {
+    } else if (i < (page + 4) && i > page) {
       added = true;
     } else if (i == page) {
       added = true;
@@ -325,6 +379,9 @@ function setPage(page) {
     }
 
     if (added) {
+      console.log('Adding number:',i);
+
+      /* Check if listitem is current page */
       if (current) {
         listItem.className = 'current noselect';
       } else {
@@ -524,18 +581,22 @@ function setupAddMovie() {
     let year = $('#addMovieYear').val();
     let imageURL = $('.imagePlaceHolder').attr('imageurl');
 
-    // if(!imageURL){
-    //   imageURL = 'http://dummyimage.com/100x150.jpg/' + bgColor + '/' + textColor;
-    // }
+
+    if(!imageURL){
+      imageURL = 'http://dummyimage.com/100x150.jpg/222/fff';
+    }
 
     // Create a movie and push it to the database
     let post = new Poster(title, director, year, imageURL);
     console.log('ADDED POST IS: ', post);
     post.push();
 
+    /* OFFLINE SUPPORT */
+    //downloadedMovies.push(post);
+
     $(document).off('click', '#movieToDbBtn');
     addMovieDiv.attr('id', 'addmovie');
-    resetAddMovie();
+    resetAddMovie(addMovieDiv);
   });
 
   /* Add EventListener to add a image btn */
@@ -567,16 +628,14 @@ function setupAddMovie() {
 
   /* Add EventListener to close the addMovie */
   $(document).on('click', '#closeAddMovieBtn', function() {
-    addMovieDiv.attr('id', 'addmovie');
-    resetAddMovie();
+
+    resetAddMovie(addMovieDiv);
   })
 }
 
 /* Reset movie Function */
-function resetAddMovie() {
-
-  let addMovieDiv = $('#addmovie');
-
+function resetAddMovie(addMovieDiv) {
+  addMovieDiv.attr('id', 'addmovie');
   addMovieDiv.html(`<i id="addmovieBtn" class="fas fa-plus fa-6x"></i>`);
   $(document).off('click', 'span.addImageBtn');
 }

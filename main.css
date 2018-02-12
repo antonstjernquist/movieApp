@@ -10,7 +10,7 @@ header {
 
 h1 {
   font-family: 'Montserrat', sans-serif;
-  font-size: 4.2em;
+  font-size: 6.2em;
   font-weight: 100;
 }
 
@@ -26,7 +26,7 @@ input[type="text"]{
   color: #fff;
 }
 input[type="radio"], input[type="radio"] + label{
-  vertical-align: -8px;
+  vertical-align: 0px;
   margin: -5px 0px;
 }
 
@@ -94,9 +94,9 @@ input[type="radio"], input[type="radio"] + label{
 #movieWrapper {
   display: flex;
   flex-direction: column;
-  width: 85%;
+  width: 82%;
   margin: auto;
-  background-color: #333;
+  background-color: #222;
 }
 
 #movieHolder {
@@ -125,11 +125,15 @@ input[type="radio"], input[type="radio"] + label{
   min-width: 94px;
 }
 
-#sort > span, #moviesPerPage > span, #sync > * {
+#sort > span, #moviesPerPage > span{
   vertical-align: -4px;
 }
-#sort > *, #moviesPerPage > *{
+#sort > *, #moviesPerPage > * {
   vertical-align: -6px;
+}
+#sync {
+  font-size: 1.5em;
+  vertical-align: -8px;
 }
 
 #sync:hover {
@@ -235,11 +239,9 @@ input[type="radio"], input[type="radio"] + label{
 
 /* Add Movie Button Poster */
 #addmovie {
-  width: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 532px;
   color: #444;
 
 }
