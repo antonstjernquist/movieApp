@@ -282,15 +282,11 @@ function displayMoviePosters(search = false, post) {
         };
         displayPoster(post[i].doc, search);
       } else {
-<<<<<<< current
           if ($('input:radio[name=radio]:checked').val() == 1){
             displayPoster(downloadedMovies[i]);
           } else if ($('input:radio[name=radio]:checked').val() == 2){
             displayPoster(downloadedMovies[downloadedMovies.length - i - 1]);
           }
-=======
-        displayPoster(downloadedMovies[downloadedMovies.length - i - 1 ]);
->>>>>>> before discard
       }
 
     }
