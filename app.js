@@ -23,10 +23,7 @@ if (localStorage.getItem('moviesPerPage') == null) {
 
 $(window).on('load', function() {
   console.log("Window loaded");
-
   $("#radio01").prop("checked", true);
-  console.log($('#radio01').val());
-  console.log("FIIIIIIIIIIIIIIIIIIREd");
   // Search EventListener
   $('#search').keypress(function(event) {
     if (event.which == 13) {
@@ -215,12 +212,12 @@ function pageLoaded() {
 
 }
 
+$('input:radio[name=radio]:checked').val();
+
 /* Display movies based on category, filter, moviesPerPage and currentpage */
 function displayMoviePosters(search = false, post) {
   /*
   category = What category to sort by. title/director/year/newest/oldest*/
-
-
 
   if (typeof(category) == "string") {
     downloadedMovies.sort(function(a, b) {
@@ -250,7 +247,12 @@ function displayMoviePosters(search = false, post) {
         };
         displayPoster(post[i].doc, search);
       } else {
-        displayPoster(downloadedMovies[i]);
+        if ($('input:radio[name=radio]:checked').val() == 1){
+          displayPoster(downloadedMovies[i]);
+        }else if ($('input:radio[name=radio]:checked').val() == 2){
+          displayPoster(downloadedMovies[downloadedMovies.length - i - 1]);
+        }
+
       }
 
     }
