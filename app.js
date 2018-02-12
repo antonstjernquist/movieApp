@@ -23,10 +23,7 @@ if (localStorage.getItem('moviesPerPage') == null) {
 
 $(window).on('load', function() {
   console.log("Window loaded");
-
   $("#radio01").prop("checked", true);
-  console.log($('#radio01').val());
-  console.log("FIIIIIIIIIIIIIIIIIIREd");
   // Search EventListener
   $('#search').keypress(function(event) {
     if (event.which == 13) {
@@ -205,6 +202,8 @@ function pageLoaded() {
   $('.spinner').addClass('hidden');
 
 }
+
+$('input:radio[name=radio]:checked').val();
 
 /* Display movies based on category, filter, moviesPerPage and currentpage */
 function displayMoviePosters(search = false, post) {
