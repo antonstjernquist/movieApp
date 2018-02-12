@@ -25,6 +25,12 @@ input[type="text"]{
   background-color: #333;
   color: #fff;
 }
+input[type="radio"], input[type="radio"] + label{
+  vertical-align: -8px;
+  margin: -5px 0px;
+}
+
+
 .boxShadow {
   box-shadow: 0 0 11px 0px #7cff70;
 }
@@ -185,9 +191,8 @@ input[type="text"]{
   color: #fff;
   margin: 15px 10px;
   background-color: #222;
-  max-width: 250px;
+  width: 250px;
   border-radius: 5px;
-  box-shadow: -4px 4px 0px 2px #414141;
 }
 
 .movieDiv > img, .movieDiv .imagePlaceHolder {

@@ -117,6 +117,7 @@ $(window).on('load', function() {
       setTimeout(function() {
         /* setPage */
         setPage(1);
+        addMovieDiv();
       }, 200);
       once = false;
     }
@@ -139,6 +140,7 @@ $(window).on('load', function() {
     downloadedMovies.push(post);
     // post.push();
   });
+
 
   //End of callback
 });
@@ -163,28 +165,17 @@ class Poster {
 
       // Remove it from the downloadedMovies Array, LOOL funkade på första försöket :s
       let removeIndex = downloadedMovies.findIndex(x => (x == this));
-      console.log('Found this index:', removeIndex);
-
-      if(removeIndex == '-1'){
-        console.log('Movie was not found in the database.');
-      }
-      console.log('Object at '+ removeIndex + ' is: ', downloadedMovies[removeIndex]);
       downloadedMovies.splice(removeIndex,1);
-      console.log('Object at '+ removeIndex + ' after removed is: ', downloadedMovies[removeIndex]);
-
-
-      // Was the movie removed from downloadedMovies?
-      if(downloadedMovies.findIndex(x => (x == this)) != '-1'){
-        console.log('Movie was not removed. Something went wrong. The movie is still in the database!');
-      } else {
-        console.log('Movie removed successfully!');
-      }
+      console.log('Movie removed successfully!');
     } else {
       console.log('This poster cannot be removed since no key has been set!');
     }
   }
   update(){
     db.ref('movies/' + this.key).set(this);
+  }
+  setImage(imageURL){
+    this.imageurl = imageURL;
   }
   setKey(key) {
     this.key = key;
@@ -219,7 +210,7 @@ function pageLoaded() {
 function displayMoviePosters(search = false, post) {
   /*
   category = What category to sort by. title/director/year/newest/oldest*/
-
+  removeAddMovieDiv();
 
 
   if (typeof(category) == "string") {
@@ -250,13 +241,35 @@ function displayMoviePosters(search = false, post) {
         };
         displayPoster(post[i].doc, search);
       } else {
-        displayPoster(downloadedMovies[i]);
+        console.log('ELSE');
+          if ($('input:radio[name=radio]:checked').val() == 1){
+            displayPoster(downloadedMovies[i]);
+          } else if ($('input:radio[name=radio]:checked').val() == 2){
+            displayPoster(downloadedMovies[downloadedMovies.length - i - 1]);
+          }
       }
 
     }
     console.log('Number:', i)
   }
 
+  addMovieDiv();
+
+}
+
+/* Add addMovieDiv */
+
+function addMovieDiv(){
+  let addMovieDiv = document.createElement('div');
+  addMovieDiv.setAttribute('id', 'addmovie');
+  addMovieDiv.className = 'movieDiv';
+  addMovieDiv.innerHTML = `<i id="addmovieBtn" class="fas fa-plus fa-6x"></i>`
+  console.log('Run this');
+  $('#movieHolder').append(addMovieDiv);
+}
+
+function removeAddMovieDiv(){
+  $('#addmovie').remove();
 }
 
 /* Set a page function */
@@ -453,7 +466,8 @@ function displayPoster(post, search) {
   // Lägg till knappen i movieDiv
   movieDiv.appendChild(showMoreBtn);
   movieDiv.appendChild(showMoreDiv);
-  $('#movieHolder').prepend(movieDiv);
+
+  $('#movieHolder').append(movieDiv);
 
 
 }
@@ -509,18 +523,14 @@ function setupAddMovie() {
     let title = $('#addMovieTitle').val();
     let director = $('#addMovieDirector').val();
     let year = $('#addMovieYear').val();
+    let imageURL = $('.imagePlaceHolder').attr('imageurl');
 
-
-    // Random colored images for testing purposes.
-    function getRandomNumber(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    let bgColor = getRandomNumber(0, 555);
-    let textColor = getRandomNumber(555, 999999);
+    // if(!imageURL){
+    //   imageURL = 'http://dummyimage.com/100x150.jpg/' + bgColor + '/' + textColor;
+    // }
 
     // Create a movie and push it to the database
-    let post = new Poster(title, director, year, 'http://dummyimage.com/100x150.jpg/' + bgColor + '/' + textColor);
+    let post = new Poster(title, director, year, imageurl);
     console.log('ADDED POST IS: ', post);
     post.push();
 
@@ -531,7 +541,11 @@ function setupAddMovie() {
 
   /* Add EventListener to add a image btn */
   $(document).on('click', 'span.addImageBtn', function() {
-    alert('Alert alert, find me here! Good night to you sir!');
+    let imageDiv = document.createElement('div');
+    imageDiv.className = 'imageDiv';
+
+    let inputField = document.createElement('input');
+    inputField.className = 'imageInputField';
   });
 
   /* Add EventListener to close the addMovie */

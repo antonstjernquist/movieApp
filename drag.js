@@ -13,9 +13,14 @@ $(window).on('load', function(){
 
             if(file.type.startsWith('image/')){
 
-              console.log('IMAGE FOUND')
+              console.log('IMAGE FOUND');
+              // Create image URL
+              let imageURL = window.URL.createObjectURL(file);
+
+
               event.target.innerHTML = "";
-              event.target.style.background = 'url('+window.URL.createObjectURL(file)+')';
+              event.target.setAttribute('imageurl', imageURL);
+              event.target.style.background = 'url('+imageURL+')';
               event.target.style.backgroundSize = 'cover';
             } else {
               event.target.innerHTML = `
