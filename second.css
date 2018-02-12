@@ -1,0 +1,26 @@
+div > input.imageInputField {
+  background-color: #555;
+  border-radius: 4px;
+  font-size: 1.2em;
+  padding: 15px 25px;
+  color: #fff;
+  border: none;
+  flex: 1 1 300px;
+  margin: 18px 0px;
+}
+.imageDiv {
+  position: absolute;
+  display: flex;
+  left: 144px;
+  background-color: #4B4B4B;
+  padding: 15px 63px 15px 25px;
+  width: 62%;
+  border-radius: 9px;
+}
+
+.imageDiv > button {
+  color: #eee;
+  background-color: #444;
+  padding: 12px 21px;
+  margin: 13px 8px 14px 8px;
+}

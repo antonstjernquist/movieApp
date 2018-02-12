@@ -529,7 +529,7 @@ function setupAddMovie() {
     // }
 
     // Create a movie and push it to the database
-    let post = new Poster(title, director, year, imageurl);
+    let post = new Poster(title, director, year, imageURL);
     console.log('ADDED POST IS: ', post);
     post.push();
 
@@ -545,6 +545,24 @@ function setupAddMovie() {
 
     let inputField = document.createElement('input');
     inputField.className = 'imageInputField';
+
+    let imageBtn = document.createElement('button');
+    imageBtn.innerText = 'Spara'
+
+    imageDiv.appendChild(inputField);
+    imageDiv.appendChild(imageBtn);
+    $('.imagePlaceHolder').append(imageDiv);
+
+    imageBtn.addEventListener('click', function(){
+      let jq = $('.imagePlaceHolder');
+      jq.css('background', 'url('+inputField.value+')');
+      jq.css('background-size', 'cover');
+
+      jq.text('');
+      jq.attr('imageurl', inputField.value);
+      $('.imageDiv').remove();
+    });
+
   });
 
   /* Add EventListener to close the addMovie */
